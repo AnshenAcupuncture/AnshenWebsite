@@ -441,8 +441,12 @@ section { padding-block: var(--section-y); }
 .hero--home .hero-full__content { max-width: 900px; }
 .hero-full.hero--contact { min-height: max(230px, 33.333vw); aspect-ratio: 3 / 1; background: var(--rice-paper); }
 .hero--contact img { object-fit: cover; object-position: center; filter: none; }
-.hero--contact::after { display: none; }
-.hero--contact h1 { color: var(--deep-forest); text-shadow: none; }
+.hero--contact::after {
+  background:
+    linear-gradient(180deg, rgba(46, 29, 18, 0.22) 0%, rgba(46, 29, 18, 0.18) 48%, rgba(46, 29, 18, 0.3) 100%),
+    rgba(46, 29, 18, 0.12);
+}
+.hero--contact h1 { color: var(--rice-paper); text-shadow: 0 2px 12px rgba(22, 14, 9, 0.55); }
 @media (max-width: 700px) {
   .hero--contact.hero--page .hero-full__content { padding-block: 6rem 2rem; }
 }
