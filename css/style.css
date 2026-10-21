@@ -439,7 +439,7 @@ section { padding-block: var(--section-y); }
   100% { transform: scale(1.07); }
 }
 .hero--home .hero-full__content { max-width: 900px; }
-.hero-full.hero--contact { min-height: max(230px, 33.333vw); aspect-ratio: 3 / 1; background: var(--rice-paper); }
+.hero-full.hero--contact { min-height: max(230px, 55.814vw); aspect-ratio: 2752 / 1536; background: var(--rice-paper); }
 .hero--contact img { object-fit: contain; filter: none; }
 .hero--contact::after { display: none; }
 .hero--contact h1 { color: var(--deep-forest); text-shadow: none; }
