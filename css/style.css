@@ -439,12 +439,12 @@ section { padding-block: var(--section-y); }
   100% { transform: scale(1.07); }
 }
 .hero--home .hero-full__content { max-width: 900px; }
-.hero--contact { background: var(--rice-paper); }
-.hero--contact img { filter: none; }
+.hero-full.hero--contact { min-height: max(230px, 33.333vw); aspect-ratio: 3 / 1; background: var(--rice-paper); }
+.hero--contact img { object-fit: contain; filter: none; }
 .hero--contact::after { display: none; }
 .hero--contact h1 { color: var(--deep-forest); text-shadow: none; }
 @media (max-width: 700px) {
-  .hero--contact img { object-fit: contain; }
+  .hero--contact.hero--page .hero-full__content { padding-block: 6rem 2rem; }
 }
 .hero--tag {
   display: inline-flex;
