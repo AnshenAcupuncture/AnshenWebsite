@@ -427,8 +427,13 @@ section { padding-block: var(--section-y); }
 .hero-full .lede { color: rgba(245, 240, 232, 0.88); margin-inline: auto; }
 .hero-full .cta-actions { justify-content: center; }
 
-.hero--home { min-height: 100vh; }
-.hero--home img { animation: hero-drift 26s ease-in-out infinite alternate; }
+.hero--home { min-height: 100vh; background: #211914; }
+.hero--home img { filter: saturate(1.08) sepia(0.05); animation: hero-drift 26s ease-in-out infinite alternate; }
+.hero--home::after {
+  background:
+    radial-gradient(ellipse 62% 46% at 50% 48%, rgba(24, 18, 14, 0.3) 0%, rgba(24, 18, 14, 0) 72%),
+    linear-gradient(180deg, rgba(24, 18, 14, 0.42) 0%, rgba(24, 18, 14, 0.08) 40%, rgba(24, 18, 14, 0.52) 100%);
+}
 @keyframes hero-drift {
   0% { transform: scale(1); }
   100% { transform: scale(1.07); }
