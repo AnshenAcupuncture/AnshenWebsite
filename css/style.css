@@ -1,0 +1,1395 @@
+/* ============================================================
+   Ānshén Acupuncture — Core stylesheet
+   Palette and type derived from the Ānshén Acupuncture Brand Kit v1.0
+   ============================================================ */
+
+:root {
+  /* Core palette — primary/secondary per client brief */
+  --rice-paper: #f5f0e8;   /* primary  */
+  --pine-teal:  #2f5c56;   /* secondary */
+
+  /* Supporting naturals (brand kit) — used sparingly */
+  --deep-forest: #21453f;
+  --warm-clay:   #c08457;
+  --sage:        #93a88f;
+  --ink:         #1e2b28;
+
+  /* Derived tints */
+  --cream-deep:  #ece5d9;
+  --cream-edge:  #ded4c4;
+  --teal-soft:   rgba(47, 92, 86, 0.08);
+  --teal-line:   rgba(47, 92, 86, 0.18);
+
+  /* Type */
+  --display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --body: "Mulish", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Rhythm */
+  --measure: 66ch;
+  --gutter: clamp(1.25rem, 4vw, 2.5rem);
+  --shell: 1180px;
+  --section-y: clamp(4.5rem, 9vw, 8rem);
+  --radius: 10px;
+  --radius-card: 20px;
+  --radius-pill: 100px;
+  --header-h: 84px;
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Native hardware-accelerated smooth scrolling for in-page anchors */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--rice-paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-weight: 400;
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; height: auto; }
+
+a { color: var(--pine-teal); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+:focus-visible {
+  outline: 2px solid var(--pine-teal);
+  outline-offset: 3px;
+}
+.site-footer :focus-visible,
+.hero-full :focus-visible,
+.band--forest :focus-visible,
+.site-header :focus-visible {
+  outline-color: var(--rice-paper);
+}
+
+/* ---------- Type scale ---------- */
+h1, h2, h3, h4 {
+  font-family: var(--display);
+  font-weight: 400;
+  color: var(--pine-teal);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.6em;
+  /* balances line breaks across a heading so a short last word never gets
+     stranded alone on its own line — no amount of max-width tuning fixes
+     that for every sentence length, since it's font-size/viewport dependent */
+  text-wrap: balance;
+}
+
+h1 { font-size: clamp(2.6rem, 6.2vw, 4.35rem); }
+h2 { font-size: clamp(2rem, 4.2vw, 3rem); }
+h3 { font-size: clamp(1.35rem, 2.2vw, 1.7rem); }
+h4 { font-size: 1.125rem; font-family: var(--body); font-weight: 600; letter-spacing: 0.01em; }
+
+/* same orphan-word problem as headings, but "pretty" (not "balance", which
+   is capped ~6 lines and costly on long copy) is the right tool for
+   paragraph-length text */
+p { margin: 0 0 1.15em; max-width: var(--measure); text-wrap: pretty; }
+
+.eyebrow {
+  font-family: var(--body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin: 0 0 1.1rem;
+  /* Overrides the base p { max-width: var(--measure) } rule — that 66ch
+     reading-width cap is meant for body copy, but it was also shrinking this
+     short one-line label's own box, which broke centering in centered
+     contexts (the box sat flush-left instead of centering itself, even
+     though the text inside it was technically centered). Eyebrows are never
+     long enough to need the cap anyway. */
+  max-width: none;
+}
+
+.lede {
+  font-size: clamp(1.1rem, 1.7vw, 1.28rem);
+  line-height: 1.75;
+  color: rgba(30, 43, 40, 0.82);
+}
+
+.hanzi {
+  font-family: var(--display);
+  color: var(--sage);
+  font-size: 1.5em;
+  line-height: 1;
+}
+
+/* ---------- Layout ---------- */
+.container {
+  width: min(100% - (var(--gutter) * 2), var(--shell));
+  margin-inline: auto;
+}
+
+section { padding-block: var(--section-y); }
+
+.section-head { margin-bottom: clamp(2.5rem, 5vw, 4rem); max-width: 52rem; }
+.section-head--center { margin-inline: auto; text-align: center; }
+/* quiet oversized watermark behind a centered section-head, echoing the
+   hanzi/yin-yang marks used on the About page — a focal point for sections
+   that are otherwise just centered text on a flat background */
+.section-head--motif { position: relative; }
+.section-head--motif::before {
+  content: "\262F";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--display);
+  font-size: 26rem;
+  line-height: 1;
+  color: var(--pine-teal);
+  opacity: 0.05;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.grid { display: grid; gap: clamp(1.5rem, 3vw, 2.5rem); align-items: stretch; }
+/* min() wrapper keeps these safe on narrow screens; the raised base value
+   stops auto-fit from fitting a phantom extra empty track once the container
+   is wide enough — that phantom track was stealing 1fr share from the real
+   items, squashing them down to their bare minimum width instead of
+   stretching to fill the row (visible past ~1260px viewport width, where
+   the 1180px shell container is just wide enough for a 4th/3rd track to fit). */
+.grid--2 { grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr)); }
+.grid--3 { grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); }
+
+.band-cream { background: var(--cream-deep); }
+.band-teal {
+  background: var(--pine-teal);
+  color: var(--rice-paper);
+}
+.band-teal h1, .band-teal h2, .band-teal h3 { color: var(--rice-paper); }
+.band-teal .eyebrow { color: rgba(245, 240, 232, 0.6); }
+.band-teal p { color: rgba(245, 240, 232, 0.85); }
+.band-teal a:not(.btn) { color: var(--rice-paper); }
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  font-family: var(--body);
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: none;
+  padding: 1.02rem 2.15rem;
+  border: 1px solid var(--pine-teal);
+  border-radius: var(--radius-pill);
+  background: var(--pine-teal);
+  color: var(--rice-paper);
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(30, 43, 40, 0.14);
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+.btn:hover { background: var(--deep-forest); border-color: var(--deep-forest); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(30, 43, 40, 0.2); }
+
+.btn--ghost { background: transparent; color: var(--pine-teal); box-shadow: none; }
+.btn--ghost:hover { background: var(--pine-teal); color: var(--rice-paper); }
+
+/* subtle warm sheen (not literal gold, stays in the clay/terracotta family)
+   plus a soft shadow tinted the same warm hue — a neutral grey shadow here
+   would read as a generic flat-button lift rather than a warm, premium one */
+.btn--clay {
+  background: linear-gradient(150deg, #b25c2f 0%, #9e4f25 45%, #7e3b18 100%);
+  border-color: #9e4f25;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(158, 79, 37, 0.35);
+  transition: box-shadow 0.3s ease, transform 0.3s ease, filter 0.3s ease;
+}
+/* hover keeps the exact same gradient (re-declared only to beat .btn:hover's
+   solid teal override) and darkens it with a filter instead of swapping to
+   a different gradient — background-image values don't interpolate, so two
+   different gradients just snap instantly no matter what transition is set;
+   filter is reliably animatable, so this is the one that actually eases in */
+.btn--clay:hover {
+  background: linear-gradient(150deg, #b25c2f 0%, #9e4f25 45%, #7e3b18 100%);
+  border-color: #6d3314;
+  filter: brightness(0.92);
+  box-shadow: 0 10px 26px rgba(158, 79, 37, 0.45);
+}
+
+.btn--onteal { background: var(--rice-paper); border-color: var(--rice-paper); color: var(--pine-teal); }
+.btn--onteal:hover { background: transparent; color: var(--rice-paper); }
+
+/* outline variant for a second action on a teal band — needs cream text/border, not onteal's dark text */
+.btn--onteal-outline { background: transparent; border-color: rgba(245, 240, 232, 0.45); color: var(--rice-paper); }
+.btn--onteal-outline:hover { background: var(--rice-paper); border-color: var(--rice-paper); color: var(--pine-teal); }
+
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--pine-teal);
+  border-bottom: 1px solid var(--teal-line);
+  padding: 0.4rem 0 0.3rem;
+  transition: border-color 0.3s ease;
+}
+.link-arrow:hover { border-color: var(--pine-teal); }
+
+.cta-actions { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin-top: 2rem; }
+
+/* ---------- Header ---------- */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  background: rgba(20, 29, 26, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transform: translateZ(0);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  min-height: var(--header-h);
+}
+
+.brand { display: flex; align-items: center; gap: 0.9rem; text-decoration: none; }
+/* doubled (was 42px) using the tightly-cropped logo-mark.png so the dragon
+   linework actually reads at this size — sized to match --header-h (84px)
+   exactly so the header doesn't have to grow taller to fit it */
+.brand img { width: 72px; height: 72px; object-fit: contain; }
+.brand-word {
+  font-family: var(--display);
+  font-size: 1.32rem;
+  color: var(--rice-paper);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.brand-word em { font-style: italic; }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: calc(clamp(1.1rem, 2.2vw, 2rem) + 10px);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav-links > li > a {
+  position: relative;
+  font-size: 0.83rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--rice-paper);
+  text-decoration: none;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid transparent;
+}
+.nav-links > li > a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 1px;
+  background: var(--warm-clay);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.nav-links > li > a:hover::after,
+.nav-links > li > a[aria-current="page"]::after { transform: scaleX(1); }
+
+/* dropdown */
+.has-sub { position: relative; }
+.sub {
+  position: absolute;
+  top: 100%;
+  left: -1rem;
+  min-width: 250px;
+  background: var(--rice-paper);
+  border: 1px solid var(--teal-line);
+  border-radius: 14px;
+  padding: 0.5rem 0;
+  margin: 0;
+  list-style: none;
+  box-shadow: 0 14px 34px rgba(30, 43, 40, 0.18);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
+}
+.has-sub:hover .sub,
+.has-sub:focus-within .sub { opacity: 1; visibility: visible; transform: translateY(0); }
+.sub a {
+  display: block;
+  padding: 0.6rem 1.25rem;
+  border-bottom: none;
+  font-size: 0.85rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+.sub a:hover { background: var(--teal-soft); border-bottom-color: transparent; color: var(--pine-teal); }
+.sub a[aria-current="page"] { background: var(--teal-soft); color: var(--pine-teal); font-weight: 600; }
+
+.nav-cta { display: flex; align-items: center; gap: 0.85rem; }
+.nav-cta .btn { padding: 0.75rem 1.5rem; font-size: 0.73rem; }
+
+.nav-toggle {
+  display: none;
+  width: 48px; height: 48px;
+  background: transparent;
+  border: 1px solid rgba(245, 240, 232, 0.35);
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+}
+.nav-toggle span,
+.nav-toggle span::before,
+.nav-toggle span::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 18px;
+  height: 1.5px;
+  background: var(--rice-paper);
+  transform: translateX(-50%);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.nav-toggle span { top: 50%; margin-top: -0.75px; }
+.nav-toggle span::before { top: -6px; left: 0; transform: none; }
+.nav-toggle span::after { top: 6px; left: 0; transform: none; }
+.nav-toggle[aria-expanded="true"] span { background: transparent; }
+.nav-toggle[aria-expanded="true"] span::before { transform: rotate(45deg) translate(4px, 4px); }
+.nav-toggle[aria-expanded="true"] span::after { transform: rotate(-45deg) translate(4px, -4px); }
+
+/* ---------- Hero (full-bleed photographic) ---------- */
+.hero-full {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: var(--deep-forest);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-full img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(0.94);
+}
+.hero-full::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 62% 46% at 50% 48%, rgba(14, 19, 17, 0.42) 0%, rgba(14, 19, 17, 0) 72%),
+    linear-gradient(180deg, rgba(20, 29, 26, 0.55) 0%, rgba(20, 29, 26, 0.16) 40%, rgba(20, 29, 26, 0.6) 100%),
+    rgba(20, 29, 26, 0.3);
+}
+.hero-full__content {
+  position: relative;
+  z-index: 2;
+  width: min(100% - (var(--gutter) * 2), var(--shell));
+  margin-inline: auto;
+  text-align: center;
+  padding-block: clamp(6rem, 12vw, 9rem);
+}
+.hero-full h1, .hero-full h2 {
+  color: var(--rice-paper);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9), 0 6px 28px rgba(0, 0, 0, 0.8), 0 18px 50px rgba(0, 0, 0, 0.6);
+}
+.hero-full .eyebrow { color: #c7b79b; }
+.hero-full .lede { color: rgba(245, 240, 232, 0.88); margin-inline: auto; }
+.hero-full .cta-actions { justify-content: center; }
+
+.hero--home { min-height: 100vh; }
+.hero--home img { animation: hero-drift 26s ease-in-out infinite alternate; }
+@keyframes hero-drift {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.07); }
+}
+.hero--home .hero-full__content { max-width: 900px; }
+.hero--tag {
+  display: inline-flex;
+  margin-top: 1.75rem;
+  background: rgba(245, 240, 232, 0.95);
+  color: var(--pine-teal);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0.6rem 1.15rem;
+  border-radius: var(--radius-pill);
+}
+.trust-signals {
+  max-width: none;
+  margin: 1.75rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1.75rem;
+  font-size: 0.78rem;
+  color: rgba(245, 240, 232, 0.75);
+}
+.trust-signals span { white-space: nowrap; }
+
+.hero--page { min-height: 48vh; }
+.hero--page .hero-full__content { padding-block: clamp(7rem, 14vw, 9rem) clamp(3rem, 6vw, 4rem); }
+.hero--tall { min-height: 64vh; }
+.hero--short { min-height: 38vh; }
+
+/* plain (non-photo) page band for content pages like the blog */
+.page-band {
+  background: var(--cream-deep);
+  padding-block: calc(var(--header-h) + clamp(2.5rem, 5vw, 4rem)) clamp(2.5rem, 5vw, 4rem);
+}
+.page-band h1 { margin-bottom: 0.35em; }
+.page-band .breadcrumb, .page-band .breadcrumb a { color: var(--sage); }
+.page-band .breadcrumb a:hover { color: var(--pine-teal); }
+
+/* breadcrumb */
+.breadcrumb {
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #c7b79b;
+  margin-bottom: 1.1rem;
+}
+.breadcrumb a { color: #c7b79b; text-decoration: none; }
+.breadcrumb a:hover { color: var(--rice-paper); }
+
+/* split hero for service detail pages — the image column bleeds to the
+   browser's right edge (outside the site's normal container), while the
+   copy column keeps left-edge alignment via padding instead of .container.
+   Row height is driven naturally by the copy column's content — grid's
+   default align-items:stretch expands the image to match it — so the hero
+   is only ever as tall as its own text needs, no fixed vh height to guess. */
+.hero-split {
+  background: var(--deep-forest);
+  position: relative;
+  overflow: hidden;
+  /* the generic `section { padding-block: var(--section-y) }` rule would
+     otherwise add its own top/bottom padding here — this hero needs zero,
+     since the figure must bleed to the section's true edges and the copy
+     column supplies its own header-clearing padding instead. */
+  padding-block: 0;
+}
+.hero-split-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 40% 60%;
+}
+.hero-split-copy::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* radial anchored to the top-left corner rather than a 135deg diagonal.
+     A diagonal reaches a *different* value at each point along the bottom
+     edge (transparent at bottom-left, darkest at bottom-right), so it met
+     the flat quick-facts band below at a mismatched colour and showed as a
+     hard line. With a radial sized to 85% of the height, every point on the
+     bottom edge is past the transparent stop at any viewport, so the panel
+     ends on plain deep-forest and joins the band below invisibly. */
+  background: radial-gradient(110% 85% at 0% 0%, rgba(192, 132, 87, 0.2) 0%, rgba(192, 132, 87, 0) 65%);
+  pointer-events: none;
+}
+.hero-split-copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* +95px each side (190px total) on top of the existing responsive
+     clamp — the hero's height is fully driven by this column's content
+     (the image grid-stretches to match it), so this is the lever for
+     making the whole hero taller, not a min-height on the section. */
+  padding-block: calc(var(--header-h) + clamp(1.5rem, 3vw, 2.5rem) + 95px) calc(clamp(2.5rem, 5vw, 3.5rem) + 95px);
+  /* Shifted left of exact container-edge alignment so the whole column
+     (breadcrumb, badge, h1, button) pulls away from the image, not just the
+     text inside it. The 17rem cap matters: this padding tracks half the
+     viewport while the column itself is only 40% of it, so past ~1750px the
+     usable text width would otherwise shrink as the screen grows — at 1920px
+     that left the h1 328px to fit the 373px word "Appointment", overflowing
+     it into the photo. Capping stops the column ever starving itself. */
+  padding-left: clamp(var(--gutter), calc((100vw - var(--shell)) / 2 + var(--gutter) - 5rem), 17rem);
+  /* keeps the h1 clear of the image's left-edge gradient. Trimmed back when
+     the split went 44%->40%: this column's padding-left grows at ~half the
+     viewport while the column itself only grows at 40%, so the usable text
+     width actually *shrinks* as the screen widens. The old 7rem cap left just
+     296px of content at 1920px; a smaller cap returns that headroom, and the
+     image's own left fade still supplies plenty of visual separation. */
+  padding-right: clamp(1.75rem, 5vw, 5rem);
+}
+/* this page's breadcrumb ("Home / Our Services / Follow-Up Acupuncture") wraps
+   to a second line at wide viewports where the other two service pages'
+   shorter breadcrumbs stay on one — trims extra padding to compensate so all
+   three heroes land at roughly the same height */
+.hero-split--tight .hero-split-copy {
+  padding-block: calc(var(--header-h) + clamp(1.5rem, 3vw, 2.5rem) + 85px) calc(clamp(2.5rem, 5vw, 3.5rem) + 85px);
+}
+.hero-split-copy h1 { color: var(--rice-paper); margin-bottom: 1rem; } /* 16px to supporting line */
+.hero-split-copy .breadcrumb { margin-bottom: 2.5rem; opacity: 0.85; } /* 40px to badge; dimmed ~15% so it doesn't compete with the badge below */
+.hero-split-copy .eyebrow {
+  display: inline-flex;
+  width: fit-content;
+  color: #f0dfc4;
+  border: 1px solid rgba(199, 183, 155, 0.4);
+  padding: 0.45rem 1.1rem;
+  border-radius: var(--radius-pill);
+  margin-bottom: 3.125rem; /* 50px to heading */
+}
+.hero-split-copy .lede { color: rgba(245, 240, 232, 0.85); max-width: 38ch; margin-bottom: 3rem; } /* 48px to button */
+/* flex column items don't collapse margins the way block content does, so
+   cta-actions' own margin-top would otherwise stack on top of h1's 48px
+   margin-bottom instead of the two sharing that gap */
+.hero-split-copy .cta-actions { margin-top: 0; }
+/* a touch larger than the default .btn — +6px tall, +12px wide — for a bit
+   more presence as the hero's one call to action */
+.hero-split-copy .cta-actions .btn {
+  padding-block: calc(1.02rem + 3px);
+  padding-inline: calc(2.15rem + 6px);
+}
+.hero-split-figure {
+  position: relative;
+  overflow: hidden;
+}
+.hero-split-figure img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.96);
+  transition: transform 0.7s ease;
+}
+.hero-split-figure:hover img { transform: scale(1.045); }
+.hero-split-figure::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* left-edge fade softens the hard cut where the image meets the copy
+     column's solid deep-forest background — same colour, so the two blend
+     into one another instead of the photo just stopping abruptly */
+  /* the bottom fade resolves to fully opaque deep-forest (not a near-black
+     tint) so the photo's last pixels are exactly the colour of the stat band
+     directly beneath it — the photo dissolves into that band rather than
+     stopping against it on a visible edge */
+  background:
+    linear-gradient(90deg, var(--deep-forest) 0%, rgba(33, 69, 63, 0.72) 10%, rgba(33, 69, 63, 0.26) 21%, rgba(33, 69, 63, 0) 35%),
+    linear-gradient(180deg, rgba(33, 69, 63, 0) 72%, rgba(33, 69, 63, 0.5) 90%, var(--deep-forest) 100%);
+}
+.hero-float-chip {
+  position: absolute;
+  left: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  background: rgba(245, 240, 232, 0.96);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 0.8rem 1.2rem;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 16px 32px rgba(20, 29, 26, 0.32);
+}
+.hero-float-chip strong {
+  font-family: var(--display);
+  font-size: 1.4rem;
+  color: var(--pine-teal);
+  line-height: 1;
+}
+.hero-float-chip span {
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.hero-float-chip--label span { font-size: 0.72rem; }
+.hero-price-tag {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  color: var(--rice-paper);
+  font-family: var(--display);
+}
+.hero-price-tag strong { font-size: 1.7rem; }
+.hero-price-tag span { font-size: 0.85rem; color: rgba(245, 240, 232, 0.65); font-family: var(--body); }
+
+/* ---------- Cards ---------- */
+.card {
+  background: #fff;
+  border: 1px solid var(--cream-edge);
+  border-radius: var(--radius-card);
+  padding: clamp(1.8rem, 3vw, 2.5rem);
+  /* an explicit zero-alpha shadow at rest (rather than the default `none`)
+     gives the transition a matching shape to interpolate from — without it,
+     some browsers snap straight to the hover shadow instead of easing in */
+  box-shadow: 0 0 0 rgba(30, 43, 40, 0);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.band-cream .card { background: #fff; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 20px 44px rgba(30, 43, 40, 0.1); }
+/* most cards also carry .reveal for the scroll-in fade, whose own transition
+   shorthand (later in this file, same specificity) would otherwise replace
+   this rule wholesale and silently drop the box-shadow transition — the
+   compound selector's higher specificity guarantees this one wins */
+.card.reveal {
+  transition: opacity 0.8s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.card h3 { margin-bottom: 0.5rem; }
+.card p:last-child { margin-bottom: 0; }
+.card .mark {
+  font-family: var(--display);
+  font-size: 1.9rem;
+  color: var(--sage);
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
+/* Icon badge — rounded square with a circle mark, cycles accent tints */
+.icon-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.4rem;
+  background: var(--teal-soft);
+}
+.icon-badge::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2.5px solid var(--pine-teal);
+}
+.icon-badge--clay { background: rgba(192, 132, 87, 0.12); }
+.icon-badge--clay::before { border-color: var(--warm-clay); }
+.icon-badge--sage { background: rgba(147, 168, 143, 0.16); }
+.icon-badge--sage::before { border-color: var(--sage); }
+
+/* CTA accent card — solid colour, used to close out a card grid */
+.cta-card {
+  background: var(--pine-teal);
+  color: var(--rice-paper);
+  border-radius: var(--radius-card);
+  padding: clamp(1.8rem, 3vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.cta-card h3 { color: var(--rice-paper); }
+.cta-card p { color: rgba(245, 240, 232, 0.78); }
+.cta-card > div { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
+.cta-card > div p { margin: 0; max-width: 36ch; }
+.grid--3 .cta-card { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
+.grid--3 .cta-card h3 { flex-shrink: 0; }
+@media (max-width: 700px) {
+  .grid--3 .cta-card { flex-direction: column; align-items: stretch; }
+}
+
+.service-card { display: flex; flex-direction: column; }
+.service-card .meta {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #9e4f25;
+  font-weight: 700;
+  margin-bottom: 0.9rem;
+}
+.service-card .link-arrow { margin-top: auto; align-self: flex-start; padding-top: 1.2rem; }
+
+/* ---------- Steps ---------- */
+.steps { counter-reset: step; }
+.step { text-align: center; }
+.step::before {
+  counter-increment: step;
+  content: counter(step, decimal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 1.2rem;
+  border-radius: 50%;
+  border: 1.5px solid rgba(192, 132, 87, 0.55);
+  font-family: var(--display);
+  font-size: 1.6rem;
+  color: var(--warm-clay);
+  animation: step-breathe 4.5s ease-in-out infinite;
+}
+.step:nth-child(1)::before { animation-delay: 0s; }
+.step:nth-child(2)::before { animation-delay: 0.6s; }
+.step:nth-child(3)::before { animation-delay: 1.2s; }
+@keyframes step-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(192, 132, 87, 0.32); }
+  50% { box-shadow: 0 0 0 9px rgba(192, 132, 87, 0); }
+}
+
+/* ---------- Split feature ---------- */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+.split img { border-radius: var(--radius-card); }
+/* small graphic anchor for a text column that's otherwise just dense prose
+   next to a photo — a plain accent rule, not competing with the image */
+.split-accent { border-left: 2px solid var(--warm-clay); padding-left: clamp(1.25rem, 2.5vw, 1.75rem); }
+/* stand-in for the practitioner bio photo until a real one is supplied —
+   deliberately looks unfinished (dashed border, muted label) rather than
+   like a styled placeholder graphic, so it can't be mistaken for content */
+.practitioner-photo-placeholder {
+  aspect-ratio: 4 / 5;
+  border: 1px dashed var(--teal-line);
+  border-radius: var(--radius-card);
+  background: var(--cream-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--pine-teal);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+}
+.split .meta {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--warm-clay);
+  margin-bottom: 1rem;
+}
+.split--sticky { align-items: start; grid-template-columns: 0.85fr 1.15fr; }
+.split--sticky > :first-child { position: sticky; top: calc(var(--header-h) + 2rem); }
+@media (max-width: 940px) {
+  .split--sticky > :first-child { position: static; }
+}
+
+/* ---------- Lists ---------- */
+.ticks { list-style: none; padding: 0; margin: 0 0 1.5rem; max-width: var(--measure); }
+.ticks li {
+  position: relative;
+  padding-left: 1.75rem;
+  margin-bottom: 0.7rem;
+  line-height: 1.7;
+}
+.ticks li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0.72em;
+  width: 9px; height: 9px;
+  border: 1px solid var(--sage);
+  border-radius: 50%;
+}
+
+/* ---------- Detail strip ---------- */
+.detail-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  border-block: 1px solid var(--teal-line);
+  padding-block: 1.75rem;
+  margin-block: 2.5rem;
+}
+.detail-strip dt {
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin-bottom: 0.4rem;
+}
+.detail-strip dd {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.3rem;
+  color: var(--pine-teal);
+}
+
+/* ---------- Image band (full-bleed photo section with a readable content card) ---------- */
+.image-band {
+  position: relative;
+  clip-path: inset(0);
+  background: var(--deep-forest);
+  /* the generic `section { padding-block: var(--section-y) }` rule would
+     otherwise add its own top/bottom padding — this band needs zero, since
+     the image must bleed to the section's true edges and the card supplies
+     its own padding instead (same reasoning as .hero-split). */
+  padding-block: 0;
+  min-height: 64vh;
+}
+.image-band img {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.96);
+  pointer-events: none;
+}
+.image-band::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 29, 26, 0.58);
+  pointer-events: none;
+}
+.image-band .container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  min-height: inherit;
+  padding-block: clamp(2.5rem, 5vw, 4rem);
+}
+.image-band-card {
+  margin-left: auto;
+  max-width: 34rem;
+  width: 100%;
+  background: rgba(20, 29, 26, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(245, 240, 232, 0.14);
+  border-radius: var(--radius-card);
+  padding: clamp(2rem, 4vw, 3rem);
+}
+.image-band-card .eyebrow { color: rgba(245, 240, 232, 0.65); }
+.image-band-card h2 { color: var(--rice-paper); }
+.image-band-card p { color: rgba(245, 240, 232, 0.88); }
+.image-band-card a { color: var(--rice-paper); }
+.image-band-card .detail-strip { border-color: rgba(245, 240, 232, 0.22); }
+.image-band-card .detail-strip dt { color: rgba(245, 240, 232, 0.6); }
+.image-band-card .detail-strip dd { color: var(--rice-paper); }
+.image-band-card .link-arrow { color: var(--rice-paper); border-color: rgba(245, 240, 232, 0.4); }
+.image-band-card .link-arrow:hover { border-color: var(--rice-paper); }
+/* modifiers for the other two image-band uses: a centred quote card, and a
+   wider card that holds a full FAQ list */
+.image-band-card--center { margin-inline: auto; }
+.image-band-card--wide { max-width: 54rem; }
+.image-band-card .pull-quote { color: var(--rice-paper); }
+.image-band-card .faq { border-top-color: rgba(245, 240, 232, 0.22); }
+.image-band-card .faq details { border-bottom-color: rgba(245, 240, 232, 0.22); }
+.image-band-card .faq summary { color: var(--rice-paper); }
+.image-band-card .faq summary::after { color: rgba(245, 240, 232, 0.6); }
+@media (max-width: 700px) {
+  .image-band .container { display: block; }
+  .image-band-card { margin-left: 0; max-width: none; }
+}
+
+/* ---------- Quick facts band (service pages) ---------- */
+/* flat deep-forest, no gradient of its own — the hero-split-copy panel right
+   above it already fades its own gradient back to plain deep-forest by its
+   bottom edge, so a flat continuation here is what actually lines up with
+   zero seam. A second, independent diagonal gradient here (even the same
+   colours) reaches a *different* value at that shared edge and shows as a
+   visible line — matching gradients can't fix that, only removing one can. */
+.quick-facts {
+  /* the hero above ends on plain deep-forest across its whole bottom edge, so
+     this band starts on the same flat colour and lights up only toward its
+     bottom-right — sized to 85% of the band's height so the top edge is past
+     the transparent stop and the join stays invisible. Together the two read
+     as one continuous surface lit from the top-left and the bottom-right. */
+  background:
+    radial-gradient(110% 85% at 100% 100%, rgba(192, 132, 87, 0.18) 0%, rgba(192, 132, 87, 0) 65%),
+    var(--deep-forest);
+  padding-block: 0;
+}
+.quick-facts dl {
+  --facts-gap: clamp(1.5rem, 3vw, 2.5rem);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--facts-gap);
+  padding-block: clamp(1.6rem, 3vw, 2.2rem);
+  margin: 0;
+}
+.quick-facts dl > div { position: relative; }
+.fact-divider { display: none; }
+/* only above the wrap breakpoint, so a wrapped row never carries a stray
+   divider at the edge. Columns switch from equal 1fr shares to max-content:
+   with equal shares, short values (eg. "Hours") leave dead space before the
+   track's own right edge while the next column's text starts flush against
+   its track's left edge, so a divider truly centered between the *tracks*
+   still reads as hugging whichever neighbour's text runs up to the boundary.
+   Sizing columns to their content — and inserting the dividers as real grid
+   tracks rather than guessing at an offset — means the same `gap` value
+   applies on both sides of every divider automatically. */
+@media (min-width: 780px) {
+  .quick-facts dl {
+    grid-template-columns: max-content auto max-content auto max-content auto max-content;
+    justify-content: space-between;
+    gap: 0 var(--facts-gap);
+  }
+  .fact-divider {
+    display: block;
+    width: 1px;
+    align-self: stretch;
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+.quick-facts dt {
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8fb0a7;
+  font-weight: 600;
+  opacity: 0.72;
+  margin-bottom: 0.2rem;
+}
+.quick-facts dd {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.75rem;
+  color: var(--rice-paper);
+}
+
+/* ---------- FAQ ---------- */
+.faq { border-top: 1px solid var(--teal-line); max-width: 780px; margin-inline: auto; --faq-panel-gap: 22px; }
+.faq details { border-bottom: 1px solid var(--teal-line); }
+.faq summary {
+  cursor: pointer;
+  padding: 1.35rem 2.5rem 1.35rem 0;
+  font-family: var(--display);
+  font-size: 1.28rem;
+  color: var(--pine-teal);
+  list-style: none;
+  position: relative;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after {
+  content: "+";
+  position: absolute;
+  right: 0.25rem; top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.4rem;
+  color: var(--sage);
+  transition: transform 0.3s ease;
+}
+.faq details[open] summary::after,
+.faq details.is-open summary::after { transform: translateY(-50%) rotate(45deg); }
+/* height (not grid-template-rows) driven by JS in main.js — a bare 0fr grid
+   track's automatic minimum size defaults to the content's own height, not
+   zero, so that trick never actually collapsed; see the FAQ accordion
+   comment there. This calm, unhurried easing still resolves in well under
+   half a second, so it never makes the user wait on a click.
+   --faq-panel-gap (the breathing room below the text when open) is folded
+   directly into the JS-animated height value itself, not applied as its own
+   margin/padding — a separately-toggled property is either instant (visibly
+   snaps in/out on its own, even with nothing else to race) or would need its
+   own transition (which then has to be perfectly time-synced with height to
+   avoid the two drifting apart mid-motion). One box, one animated property,
+   nothing left to desync. */
+.faq details p {
+  overflow: hidden;
+  margin: 0;
+  padding: 0 2.5rem 0 0;
+  transition: height 0.38s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ---------- Contact / info blocks ---------- */
+.info-list { list-style: none; padding: 0; margin: 0; }
+.info-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--teal-line);
+}
+.info-list .label { color: var(--pine-teal); font-size: 0.85rem; font-weight: 600; }
+.info-list a { text-decoration: none; }
+.info-list a:hover { text-decoration: underline; }
+
+.contact-card {
+  background: #fff;
+  border: 1px solid var(--cream-edge);
+  border-radius: var(--radius-card);
+  padding: clamp(1.8rem, 3vw, 2.6rem);
+}
+.contact-item { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.3rem; }
+.contact-item:last-child { margin-bottom: 0; }
+.contact-item .icon-badge { width: 44px; height: 44px; margin-bottom: 0; flex-shrink: 0; }
+.contact-item .icon-badge::before { width: 15px; height: 15px; }
+.contact-item .label {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pine-teal);
+  margin-bottom: 0.25rem;
+  font-weight: 700;
+}
+.contact-item .value { font-family: var(--display); font-size: 1.2rem; color: var(--pine-teal); line-height: 1.3; }
+
+.hours-note {
+  background: var(--teal-soft);
+  border-left: 2px solid var(--sage);
+  border-radius: 0 14px 14px 0;
+  padding: 1.1rem 1.35rem;
+  margin-top: 1.75rem;
+  font-size: 0.95rem;
+}
+.hours-note p { margin: 0; }
+
+/* ---------- Form ---------- */
+.field { margin-bottom: 1.35rem; }
+.field label {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pine-teal);
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  font-family: var(--body);
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--rice-paper);
+  border: 1px solid var(--teal-line);
+  border-radius: var(--radius);
+}
+.field textarea { min-height: 150px; resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none;
+  border-color: var(--pine-teal);
+  box-shadow: 0 0 0 3px var(--teal-soft);
+}
+.form-note { font-size: 0.85rem; color: rgba(30, 43, 40, 0.65); }
+/* small scattered trust reminders through service pages — same muted
+   treatment as .form-note, kept separate since the two are unrelated */
+.trust-note { font-size: 0.85rem; color: rgba(30, 43, 40, 0.65); margin-top: 1rem; }
+.form-status {
+  margin-top: 1rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: var(--radius);
+  background: var(--teal-soft);
+  color: var(--pine-teal);
+  font-size: 0.95rem;
+  display: none;
+}
+.form-status.is-visible { display: block; }
+
+/* ---------- Blog ---------- */
+.post-card { display: flex; flex-direction: column; }
+.post-card .date {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin-bottom: 0.75rem;
+}
+.empty-state {
+  border: 1px dashed var(--teal-line);
+  border-radius: var(--radius-card);
+  padding: clamp(2.5rem, 6vw, 4rem);
+  text-align: center;
+}
+.empty-state p { margin-inline: auto; }
+
+.post-card .meta-row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+.post-card .tag {
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--warm-clay);
+  background: rgba(192, 132, 87, 0.1);
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-pill);
+}
+.post-card .meta-row .date { margin-bottom: 0; }
+.post-card h3 { margin-top: 0.4rem; }
+
+/* ---------- Blog post (article) ---------- */
+.post-body {
+  width: min(100% - (var(--gutter) * 2), 43rem);
+  margin-inline: auto;
+}
+.post-body > p:first-child {
+  font-size: clamp(1.15rem, 1.8vw, 1.3rem);
+  line-height: 1.75;
+  color: rgba(30, 43, 40, 0.9);
+}
+.post-body h2 {
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  margin: 2.6rem 0 0.9rem;
+}
+.post-body h3 {
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  margin: 2rem 0 0.7rem;
+}
+.post-body ul, .post-body ol {
+  max-width: var(--measure);
+  padding-left: 1.35rem;
+  margin: 0 0 1.5rem;
+}
+.post-body li { margin-bottom: 0.6rem; line-height: 1.75; }
+.post-body .pull-quote {
+  margin: 2.4rem 0;
+  padding-left: 1.4rem;
+  border-left: 2px solid var(--warm-clay);
+  max-width: none;
+}
+.post-body hr {
+  border: 0;
+  border-top: 1px solid var(--teal-line);
+  margin: 2.6rem 0;
+}
+.post-footer-note {
+  font-size: 0.9rem;
+  color: rgba(30, 43, 40, 0.62);
+  font-style: italic;
+  margin-top: 2.4rem;
+}
+
+/* ---------- Map ---------- */
+.map-frame {
+  border: 1px solid var(--teal-line);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  min-height: 340px;
+  background: var(--cream-deep);
+}
+.map-frame iframe { display: block; width: 100%; height: 100%; min-height: 340px; border: 0; }
+
+/* ---------- Quote ---------- */
+.pull-quote {
+  font-family: var(--display);
+  font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+  line-height: 1.35;
+  color: var(--pine-teal);
+  max-width: 24ch;
+  margin: 0;
+}
+.band-teal .pull-quote { color: var(--rice-paper); }
+
+/* ---------- Footer ---------- */
+.site-footer {
+  background: var(--pine-teal);
+  color: rgba(245, 240, 232, 0.78);
+  /* a visible seam against whatever precedes it — most pages end on a
+     .band-teal CTA of this exact same colour, and with no border the two
+     fuse into one oversized block with no sense of where the page "ends" */
+  border-top: 1px solid rgba(245, 240, 232, 0.14);
+  padding-block: clamp(3rem, 5vw, 4rem) 2rem;
+  font-size: 0.92rem;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  padding-bottom: 3rem;
+}
+.site-footer h4 {
+  color: var(--rice-paper);
+  font-family: var(--body);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 1.1rem;
+}
+.site-footer p { color: rgba(245, 240, 232, 0.72); max-width: 34ch; }
+.site-footer ul { list-style: none; padding: 0; margin: 0; }
+.site-footer li { margin-bottom: 0.6rem; }
+.site-footer a { color: rgba(245, 240, 232, 0.82); text-decoration: none; }
+.site-footer a:hover { color: var(--rice-paper); text-decoration: underline; }
+.footer-brand { display: flex; align-items: center; gap: 1.1rem; margin-bottom: 1.1rem; }
+.footer-brand .brand-mark {
+  /* No background/circle here — that CSS ring was the actual bug. The nav
+     logo never had one; it's a bare image on the header's dark background.
+     This wrapper now does the same: just centers the image, no styling. */
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.footer-brand img { width: 76px; height: 76px; object-fit: contain; }
+.footer-brand span { font-family: var(--display); font-size: 1.2rem; color: var(--rice-paper); }
+.footer-base {
+  border-top: 1px solid rgba(245, 240, 232, 0.16);
+  padding-top: 1.75rem;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.82rem;
+  color: rgba(245, 240, 232, 0.6);
+}
+.footer-base p { margin: 0; color: inherit; }
+.footer-base a { color: inherit; text-decoration: none; }
+.footer-base a:hover { color: var(--rice-paper); text-decoration: underline; }
+
+/* ---------- Reveal ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+/* stagger repeated items in a grid so they arrive one at a time, not all at once */
+.grid > .reveal:nth-child(1) { transition-delay: 0s; }
+.grid > .reveal:nth-child(2) { transition-delay: 0.12s; }
+.grid > .reveal:nth-child(3) { transition-delay: 0.24s; }
+.grid > .reveal:nth-child(4) { transition-delay: 0.36s; }
+.grid > .reveal:nth-child(5) { transition-delay: 0.48s; }
+.grid > .reveal:nth-child(6) { transition-delay: 0.6s; }
+
+/* ---------- Skip link ---------- */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--pine-teal);
+  color: var(--rice-paper);
+  padding: 0.75rem 1.25rem;
+  z-index: 100;
+}
+.skip-link:focus { left: 1rem; top: 1rem; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 940px) {
+  .split { grid-template-columns: 1fr; }
+  .hero-split-grid { grid-template-columns: 1fr; }
+  .hero-split-figure { height: 280px; order: -1; }
+  /* the left-edge fade exists to blend the image into the copy column's
+     background when they sit side by side — stacked on mobile, that same
+     gradient would just read as an arbitrary dark patch on the photo */
+  .hero-split-figure::after {
+    /* stacked layout puts the figure above the copy panel, so its bottom edge
+       meets deep-forest here too — same dissolve, minus the left-edge fade
+       that only makes sense in the side-by-side desktop layout */
+    background: linear-gradient(180deg, rgba(33, 69, 63, 0) 50%, rgba(33, 69, 63, 0.55) 82%, var(--deep-forest) 100%);
+  }
+  .hero-split-copy {
+    padding-inline: var(--gutter);
+    padding-block: clamp(2rem, 5vw, 3rem);
+  }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 960px) {
+  .nav-toggle { display: block; }
+  /* burger (left) / brand (centre) / book now (right), dropdown menu on its
+     own row below — grid instead of flex so the toggle can sit in its own
+     column even though it's still nested inside .nav-cta in the markup.
+     The two outer columns MUST be equal (1fr each), not auto — the burger
+     (~42px) and the Book Now button (~140px) are very different widths, and
+     with auto/1fr/auto the middle column takes up whatever's left between
+     two unequal siblings, which is off-centre. 1fr/auto/1fr keeps the two
+     side columns mathematically equal regardless of their content width, so
+     the middle (logo) column is always the true centre of the header. */
+  .nav {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    /* row-gap:0 is required, not just cosmetic — the desktop rule sets the
+       shorthand `gap: 1.5rem` (row AND column), and only overriding
+       column-gap here would leave that inherited 24px row-gap sitting
+       between row 1 and the (collapsed) dropdown row, silently padding out
+       the header and pushing the logo off vertical-centre. */
+    column-gap: 1rem;
+    row-gap: 0;
+    /* header height = logo height + 10% (5% clear space above, 5% below) */
+    padding-block: 4.2px;
+  }
+  .brand { grid-column: 2; grid-row: 1; justify-self: center; }
+  .nav-cta { display: contents; }
+  .nav-toggle { grid-column: 1; grid-row: 1; justify-self: start; }
+  .nav-cta .btn { grid-column: 3; grid-row: 1; justify-self: end; }
+  nav[aria-label="Main"] { grid-column: 1 / -1; grid-row: 2; width: 100%; }
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin: 0 -1.5rem;
+    padding: 0.5rem 1.5rem 1rem;
+    background: rgba(20, 29, 26, 0.96);
+  }
+  .nav-links.is-open { display: flex; }
+  .nav-links > li { border-bottom: 1px solid rgba(245, 240, 232, 0.15); }
+  .nav-links a { display: block; padding: 0.9rem 0; border-bottom: none; }
+  .sub {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    border: none;
+    padding: 0 0 0.5rem 1rem;
+    min-width: 0;
+    background: transparent;
+  }
+  .sub a { padding: 0.5rem 0; font-size: 0.82rem; color: rgba(245, 240, 232, 0.7); }
+  .sub a:hover { background: transparent; color: var(--rice-paper); }
+  /* business name dropped on mobile — logo alone, centred and much larger,
+     stands in for the wordmark at this width */
+  .brand-word { display: none; }
+  .brand img { width: 84px; height: 84px; }
+}
+
+@media (max-width: 560px) {
+  .footer-grid { grid-template-columns: 1fr; }
+  .nav-cta .btn { padding: 0.65rem 1.1rem; font-size: 0.68rem; }
+  .info-list li { flex-direction: column; gap: 0.25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+}
+
+@media print {
+  .site-header, .site-footer, .nav-toggle { display: none; }
+  body { background: #fff; }
+}
