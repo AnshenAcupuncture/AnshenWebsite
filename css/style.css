@@ -451,6 +451,7 @@ section { padding-block: var(--section-y); }
   z-index: 0;
   display: table;
   margin-inline: auto;
+  transform: translateY(clamp(1.5rem, 7vw, 6rem));
   color: var(--rice-paper);
   text-shadow: 0 2px 8px rgba(22, 14, 9, 0.8), 0 0 26px rgba(22, 14, 9, 0.52);
 }
