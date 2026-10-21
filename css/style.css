@@ -447,16 +447,21 @@ section { padding-block: var(--section-y); }
     rgba(46, 29, 18, 0.12);
 }
 .hero--contact h1 {
+  position: relative;
+  z-index: 0;
   display: table;
   margin-inline: auto;
-  padding: 0.12em 0.42em 0.18em;
-  border: 1px solid rgba(245, 240, 232, 0.32);
-  border-radius: 0.16em;
-  background: rgba(38, 25, 17, 0.72);
-  box-shadow: 0 8px 28px rgba(22, 14, 9, 0.2);
-  backdrop-filter: blur(4px);
   color: var(--rice-paper);
-  text-shadow: 0 2px 8px rgba(22, 14, 9, 0.45);
+  text-shadow: 0 2px 8px rgba(22, 14, 9, 0.8), 0 0 26px rgba(22, 14, 9, 0.52);
+}
+.hero--contact h1::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -0.18em -0.34em;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(38, 25, 17, 0.3), rgba(38, 25, 17, 0.12) 48%, transparent 76%);
+  filter: blur(5px);
 }
 @media (max-width: 700px) {
   .hero--contact.hero--page .hero-full__content { padding-block: 6rem 2rem; }
