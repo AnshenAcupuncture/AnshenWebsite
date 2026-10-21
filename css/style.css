@@ -439,6 +439,13 @@ section { padding-block: var(--section-y); }
   100% { transform: scale(1.07); }
 }
 .hero--home .hero-full__content { max-width: 900px; }
+.hero--contact { background: var(--rice-paper); }
+.hero--contact img { filter: none; }
+.hero--contact::after { display: none; }
+.hero--contact h1 { color: var(--deep-forest); text-shadow: none; }
+@media (max-width: 700px) {
+  .hero--contact img { object-fit: contain; }
+}
 .hero--tag {
   display: inline-flex;
   margin-top: 1.75rem;
